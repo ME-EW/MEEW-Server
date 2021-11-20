@@ -6,5 +6,6 @@ module.exports = {
     READ_ALL_CHARACTERS_SUCCESS: '캐릭터 목록 가져오기 성공',
 
     // 유저
-    COMPLETE_SET_USER_CHARACTER: '유저 캐릭터 선택 성공'
+    COMPLETE_SET_USER_CHARACTER: '유저 캐릭터 선택 성공',
+    COMPLETE_GET_USER_TODOLIST: '유저 TODO LIST 조회 성공'
   };
