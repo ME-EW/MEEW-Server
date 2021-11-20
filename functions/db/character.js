@@ -21,4 +21,4 @@ const getAllCharacters = async (client) => {
   return convertSnakeToCamel.keysToCamel(rows);
 };
 
-module.exports = { getMyCharacter. getAllCharacters };
+module.exports = { getMyCharacter, getAllCharacters };
