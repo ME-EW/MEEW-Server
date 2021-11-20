@@ -12,4 +12,13 @@ const getMyCharacter = async (client, characterID) => {
   return convertSnakeToCamel.keysToCamel(rows);
 };
 
-module.exports = { getMyCharacter };
+const getAllCharacters = async (client) => {
+  const { rows } = await client.query(
+    `
+    SELECT * FROM character
+    `,
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
+module.exports = { getMyCharacter. getAllCharacters };
