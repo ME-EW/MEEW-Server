@@ -27,4 +27,30 @@ const setUserCharacter = async (client, character, userId) => {
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
 
-module.exports = { setUserCharacter };
+const getTodoLists = async (client, userId) => {
+  const { rows: user } = await client.query(
+    `
+    SELECT character FROM "user"
+    WHERE id = $1
+        AND is_deleted = FALSE
+    `,
+    [userId],
+  );
+
+  if (user.length === 0) return false;
+  const userPickCharacter = user[0].character;
+
+  const { rows: userTodoLists } = await client.query(
+    `
+    SELECT * FROM "todo"
+    WHERE id NOT IN ($1)
+    ORDER BY random()
+    LIMIT 3
+    `,
+    [userPickCharacter],
+  );
+
+  return userTodoLists;
+};
+
+module.exports = { setUserCharacter, getTodoLists };
