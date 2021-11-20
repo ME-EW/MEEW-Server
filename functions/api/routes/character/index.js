@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-router.use('/character', require('./character'));
+router.get('/me/:characterID', require('./characterMeGET'));
 
 module.exports = router;
