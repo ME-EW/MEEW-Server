@@ -45,4 +45,25 @@ const getAllCharacters = async (client) => {
   return convertSnakeToCamel.keysToCamel(rows);
 };
 
-module.exports = { getMyCharacter, getAllCharacters, getMyCharacterImgs };
+const getCharacterByUserId = async (client, userId) => {
+  const { rows: user } = await client.query(
+    `
+    SELECT * FROM "user"
+    WHERE id = $1
+    `,
+    [userId],
+  );
+
+  const userPickCharacter = user[0].character;
+  const { rows: character } = await client.query(
+    `
+    SELECT * FROM "character"
+    WHERE id = $1
+    `,
+    [userPickCharacter],
+  );
+
+  return character;
+};
+
+module.exports = { getMyCharacter, getAllCharacters, getMyCharacterImgs, getCharacterByUserId };
