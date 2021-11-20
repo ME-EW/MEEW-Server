@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-router.use('/character', require('./character'));
-router.use('/user', require('./user'));
+router.post('/:userId/character', require('./userCharacterPOST'));
 
 module.exports = router;
