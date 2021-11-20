@@ -3,18 +3,19 @@ const util = require('../../../lib/util');
 const statusCode = require('../../../constants/statusCode');
 const responseMessage = require('../../../constants/responseMessage');
 const db = require('../../../db/db');
-const { characterDB } = require('../../../db');
+const { userDB, characterDB } = require('../../../db');
 
 module.exports = async (req, res) => {
   let client;
-  const { characterID } = req.params;
+  const { userId } = req.params;
   try {
     // db/db.js에 정의한 connect 함수를 통해 connection pool에서 connection을 빌려옵니다.
     client = await db.connect(req);
 
-    const character = await characterDB.getMyCharacter(client, characterID);
+    const todoLists = await userDB.getTodoListsByMe(client, userId);
+    const images = await characterDB.getMyCharacterImgs(client, userId);
 
-    res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.READ_ALL_USERS_SUCCESS, character));
+    res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.READ_ALL_USERS_SUCCESS, {...images, todoLists}));
   } catch (error) {
     // try문 안에서 에러가 발생했을 시 catch문으로 error객체가 넘어옵니다.
     console.log(error);
