@@ -64,3 +64,6 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+# Firebase service account
+meew-server-firebase-adminsdk-30wau-a53e116155.json
