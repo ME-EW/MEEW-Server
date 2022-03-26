@@ -19,7 +19,7 @@
     "dotenv": "^10.0.0",
     "eslint-config-prettier": "^8.3.0",
     "express": "^4.17.1",
-    "firebase-admin": "^9.8.0",
+    "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.14.1",
     "helmet": "^4.6.0",
     "hpp": "^0.2.3"
