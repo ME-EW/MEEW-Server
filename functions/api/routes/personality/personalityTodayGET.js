@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
     let todo = [];
     for (let i = 0; i < allTaskIds.length; i++) {
       const taskId = allTaskIds[i];
-      const complete = completeTaskIds.filter((e) => e == taskId).length === 1 ? true : false;
+      const complete = completeTaskIds.filter((e) => e === taskId).length === 1 ? true : false;
       const task = await personalityDB.getTaskByTaskId(client, taskId);
 
       todo.push({
