@@ -14,22 +14,18 @@ module.exports = async (req, res) => {
   // @FIX_ME
   // const user = req.user;
   // const userId = user.userId;
-  const userId = 1;
-  const user = {
-    id: 1,
-    nickname: '영권',
-    personality: 1,
-    chance: 3,
-  };
-
-  if (user.chance < 1) {
-    res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.BAD_REQUEST, responseMessage.LACK_OF_CHANCE));
-  }
 
   let client;
 
   try {
     client = await db.connect(req);
+
+    const user = await userDB.getUserByUserId(client, 1);
+    const userId = user.id;
+
+    if (user.chance < 1) {
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.BAD_REQUEST, responseMessage.LACK_OF_CHANCE));
+    }
 
     const newPersonalityId = Math.floor(Math.random() * 8) + 1;
     let tasks = await personalityDB.getTasksByPersonalityId(client, newPersonalityId);
@@ -45,13 +41,14 @@ module.exports = async (req, res) => {
       tasks = tasks.filter((t) => t !== newTask);
     }
 
-    const updatedUser = await userDB.updateChanceById(client, userId, user.chance - 1);
-    const character = await personalityDB.updateRecentCharacter(client, userId, newPersonalityId, newTasks.join());
+    const updatedUser = await userDB.updateChanceByUserId(client, userId, user.chance - 1);
+    const recentHistory = await personalityDB.updateRecentHistory(client, userId, newPersonalityId, newTasks.join());
+    const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
 
     let todo = [];
     newTasks.forEach((t) => {
       todo.push({
-        content: t.content,
+        content: t.content.trim(),
         complete: false,
       });
     });

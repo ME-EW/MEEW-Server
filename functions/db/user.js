@@ -1,7 +1,18 @@
 const dayjs = require('dayjs');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
-const updateChanceById = async (client, userId, newChanceCount) => {
+const getUserByUserId = async (client, userId) => {
+  const { rows } = await client.query(
+    `
+      SELECT * FROM public.user
+      WHERE id = $1
+    `,
+    [userId],
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+};
+
+const updateChanceByUserId = async (client, userId, newChanceCount) => {
   const now = dayjs().add(9, 'hour');
   const { rows } = await client.query(
     `
@@ -16,5 +27,6 @@ const updateChanceById = async (client, userId, newChanceCount) => {
 };
 
 module.exports = {
-  updateChanceById,
+  getUserByUserId,
+  updateChanceByUserId,
 };

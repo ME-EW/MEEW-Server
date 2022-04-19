@@ -1,7 +1,7 @@
 const dayjs = require('dayjs');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
-const getRecentCharacterById = async (client, userId) => {
+const getRecentHistoryById = async (client, userId) => {
   const { rows } = await client.query(
     `
       SELECT * FROM public.history
@@ -47,7 +47,7 @@ const getTasksByPersonalityId = async (client, personalityId) => {
   return convertSnakeToCamel.keysToCamel(rows);
 };
 
-const updateRecentCharacter = async (client, userId, personalityId, allTask) => {
+const updateRecentHistory = async (client, userId, personalityId, allTask) => {
   const now = dayjs().add(9, 'hour');
   const { rows } = await client.query(
     `
@@ -62,9 +62,9 @@ const updateRecentCharacter = async (client, userId, personalityId, allTask) => 
 };
 
 module.exports = {
-  getRecentCharacterById,
+  getRecentHistoryById,
   getTaskByTaskId,
   getCharacterByPersonalityId,
   getTasksByPersonalityId,
-  updateRecentCharacter,
+  updateRecentHistory,
 };
