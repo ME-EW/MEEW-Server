@@ -3,7 +3,7 @@ const util = require('../../../lib/util');
 const statusCode = require('../../../constants/statusCode');
 const responseMessage = require('../../../constants/responseMessage');
 const db = require('../../../db/db');
-const { personalityDB } = require('../../../db');
+const { userDB, personalityDB } = require('../../../db');
 
 /**
  *  @오늘의_캐릭터_새로고침
@@ -21,6 +21,10 @@ module.exports = async (req, res) => {
     personality: 1,
     chance: 3,
   };
+
+  if (user.chance < 1) {
+    res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.BAD_REQUEST, responseMessage.LACK_OF_CHANCE));
+  }
 
   let client;
 
@@ -41,6 +45,7 @@ module.exports = async (req, res) => {
       tasks = tasks.filter((t) => t !== newTask);
     }
 
+    const updatedUser = await userDB.updateChanceById(client, userId, user.chance - 1);
     const character = await personalityDB.updateRecentCharacter(client, userId, newPersonalityId, newTasks.join());
 
     let todo = [];
@@ -52,10 +57,10 @@ module.exports = async (req, res) => {
     });
 
     const data = {
-      nickname: user.nickname,
+      nickname: updatedUser.nickname,
       name: character.name,
       level: 0,
-      chance: user.chance,
+      chance: updatedUser.chance,
       todo,
     };
 
