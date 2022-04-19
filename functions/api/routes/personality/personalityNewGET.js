@@ -42,7 +42,7 @@ module.exports = async (req, res) => {
     }
 
     const updatedUser = await userDB.updateChanceByUserId(client, userId, user.chance - 1);
-    const recentHistory = await personalityDB.updateRecentHistory(client, userId, newPersonalityId, newTasks.join());
+    const recentHistory = await personalityDB.updateRecentHistory(client, userId, newPersonalityId, newTasks.map(t => t.id).join());
     const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
 
     let todo = [];

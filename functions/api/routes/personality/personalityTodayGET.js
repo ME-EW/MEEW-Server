@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
   try {
     client = await db.connect(req);
 
-    const recentHistory = await personalityDB.getRecentCharacterById(client, userId);
+    const recentHistory = await personalityDB.getRecentHistoryById(client, userId);
     const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
 
     const allTaskIds = recentHistory.allTask.split(',');
