@@ -6,8 +6,8 @@ const db = require('../../../db/db');
 const { personalityDB } = require('../../../db');
 
 /**
- *  @오늘의_캐릭터_확인
- *  @route GET /personality/today
+ *  @오늘의_캐릭터_새로고침
+ *  @route GET /personality/new
  */
 
 module.exports = async (req, res) => {
@@ -16,8 +16,9 @@ module.exports = async (req, res) => {
   // const userId = user.userId;
   const userId = 1;
   const user = {
-    userID: 1,
+    id: 1,
     nickname: '영권',
+    personality: 1,
     chance: 3,
   };
 
@@ -26,28 +27,34 @@ module.exports = async (req, res) => {
   try {
     client = await db.connect(req);
 
-    const recentHistory = await personalityDB.getRecentCharacterById(client, userId);
-    const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
+    const newPersonalityId = Math.floor(Math.random() * 8) + 1;
+    let tasks = await personalityDB.getTasksByPersonalityId(client, newPersonalityId);
+    let newTasks = [];
 
-    const allTaskIds = recentHistory.allTask.split(',');
-    const completeTaskIds = recentHistory.completeTask.split(',');
-    let todo = [];
-    for (let i = 0; i < allTaskIds.length; i++) {
-      const taskId = allTaskIds[i];
-      const complete = completeTaskIds.filter((e) => e == taskId).length === 1 ? true : false;
-      const task = await personalityDB.getTaskByTaskId(client, taskId);
+    Array.prototype.random = function () {
+      return this[Math.floor(Math.random() * this.length)];
+    };
 
-      todo.push({
-        taskId,
-        content: task.content.trim(),
-        complete,
-      });
+    for (let i = 0; i < 4; i++) {
+      const newTask = tasks.random();
+      newTasks.push(newTask);
+      tasks = tasks.filter((t) => t !== newTask);
     }
+
+    const character = await personalityDB.updateRecentCharacter(client, userId, newPersonalityId, newTasks.join());
+
+    let todo = [];
+    newTasks.forEach((t) => {
+      todo.push({
+        content: t.content,
+        complete: false,
+      });
+    });
 
     const data = {
       nickname: user.nickname,
       name: character.name,
-      level: completeTaskIds.length,
+      level: 0,
       chance: user.chance,
       todo,
     };
