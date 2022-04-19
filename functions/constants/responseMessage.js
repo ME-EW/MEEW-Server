@@ -15,4 +15,7 @@ module.exports = {
 
   // 프로필 조회
   READ_PROFILE_SUCCESS: '프로필 조회 성공',
+
+  // 캐릭터 조회
+  GET_TODAY_SUCCESS: '오늘의 캐릭터 불러오기 완료',
 };
