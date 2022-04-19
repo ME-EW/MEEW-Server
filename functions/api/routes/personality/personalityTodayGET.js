@@ -3,7 +3,7 @@ const util = require('../../../lib/util');
 const statusCode = require('../../../constants/statusCode');
 const responseMessage = require('../../../constants/responseMessage');
 const db = require('../../../db/db');
-const { personalityDB } = require('../../../db');
+const { userDB, personalityDB } = require('../../../db');
 
 /**
  *  @오늘의_캐릭터_확인
@@ -14,23 +14,25 @@ module.exports = async (req, res) => {
   // @FIX_ME
   // const user = req.user;
   // const userId = user.userId;
-  const userId = 1;
-  const user = {
-    userID: 1,
-    nickname: '영권',
-    chance: 3,
-  };
 
   let client;
 
   try {
     client = await db.connect(req);
 
+    const user = await userDB.getUserByUserId(client, 1);
+    const userId = user.id;
+
     const recentHistory = await personalityDB.getRecentHistoryById(client, userId);
     const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
 
     const allTaskIds = recentHistory.allTask.split(',');
-    const completeTaskIds = recentHistory.completeTask.split(',');
+
+    let completeTaskIds = [];
+    if (recentHistory.completeTask) {
+      completeTaskIds = recentHistory.completeTask.split(',');
+    }
+
     let todo = [];
     for (let i = 0; i < allTaskIds.length; i++) {
       const taskId = allTaskIds[i];
