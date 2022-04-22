@@ -61,10 +61,25 @@ const updateRecentHistory = async (client, userId, personalityId, allTask) => {
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
 
+const updateTODO = async (client, userId, strCompleteTasks) => {
+  const now = dayjs().add(9, 'hour');
+  const { rows } = await client.query(
+    `
+      UPDATE public.history
+      SET complete_task = $2, updated_at = $3
+      WHERE id = (SELECT id FROM public.history WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1)
+      RETURNING *
+    `,
+    [userId, strCompleteTasks, now],
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+};
+
 module.exports = {
   getRecentHistoryById,
   getTaskByTaskId,
   getCharacterByPersonalityId,
   getTasksByPersonalityId,
   updateRecentHistory,
+  updateTODO,
 };
