@@ -6,14 +6,18 @@ const db = require('../../../db/db');
 const { userDB, personalityDB } = require('../../../db');
 
 /**
- *  @오늘은_나로_살기
- *  @route GET /personality/me
+ *  @TODO_Check_Uncheck_Toggle
+ *  @route PATCH /personality/check
+ *  @error
+ *    1. 전달받은 taskId가 사용자의 TODO Task에 포함되어 있지 않은 경우
  */
 
 module.exports = async (req, res) => {
   // @FIX_ME
   // const user = req.user;
   // const userId = user.userId;
+
+  const { taskId } = req.body;
 
   let client;
 
@@ -23,41 +27,52 @@ module.exports = async (req, res) => {
     const user = await userDB.getUserByUserId(client, 1);
     const userId = user.id;
 
-    const newPersonalityId = user.personality;
-    let tasks = await personalityDB.getTasksByPersonalityId(client, newPersonalityId);
-    let newTasks = [];
-
-    Array.prototype.random = function () {
-      return this[Math.floor(Math.random() * this.length)];
-    };
-
-    for (let i = 0; i < 4; i++) {
-      const newTask = tasks.random();
-      newTasks.push(newTask);
-      tasks = tasks.filter((t) => t !== newTask);
-    }
-
-    const recentHistory = await personalityDB.updateRecentHistory(client, userId, newPersonalityId, newTasks.map((t) => t.id).join());
+    const recentHistory = await personalityDB.getRecentHistoryById(client, userId);
     const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
 
+    const allTaskIds = recentHistory.allTask.split(',').map((t) => +t);
+    let completeTaskIds = [];
+    if (recentHistory.completeTask) {
+      completeTaskIds = recentHistory.completeTask.split(',').map((t) => +t);
+    }
+
+    // @error1. 전달받은 taskId가 사용자의 TODO Task에 포함되어 있지 않은 경우
+    if (!allTaskIds.includes(taskId)) {
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.INVALID_TASKID));
+    }
+
+    // Check
+    if (!completeTaskIds.includes(taskId)) {
+      completeTaskIds.push(taskId);
+    } else {
+      // Uncheck
+      completeTaskIds = completeTaskIds.filter((t) => t !== taskId);
+    }
+
+    await personalityDB.updateTODO(client, userId, completeTaskIds.join());
+
     let todo = [];
-    newTasks.forEach((t) => {
+    for (let i = 0; i < allTaskIds.length; i++) {
+      const taskId = allTaskIds[i];
+      const complete = completeTaskIds.filter((e) => e === taskId).length === 1 ? true : false;
+      const task = await personalityDB.getTaskByTaskId(client, taskId);
+
       todo.push({
-        taskId: t.id,
-        content: t.content.trim(),
-        complete: false,
+        taskId,
+        content: task.content.trim(),
+        complete,
       });
-    });
+    }
 
     const data = {
       nickname: user.nickname,
       name: character.name,
-      level: 0,
+      level: completeTaskIds.length,
       chance: user.chance,
       todo,
     };
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.LIVE_ME_SUCCESS, data));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.TODO_UPDATE_SUCCESS, data));
   } catch (error) {
     functions.logger.error(`[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`, `[CONTENT] ${error}`);
     console.log(error);
