@@ -20,4 +20,8 @@ module.exports = {
   GET_TODAY_SUCCESS: '오늘의 캐릭터 불러오기 완료',
   LACK_OF_CHANCE: '새로고침 잔여 기회가 없습니다',
   LIVE_ME_SUCCESS: '오늘은 나로 살기 완료',
+
+  // TODO 갱신
+  INVALID_TASKID: '유효하지 않은 taskId 입니다.',
+  TODO_UPDATE_SUCCESS: 'TODO status 업데이트 완료',
 };
