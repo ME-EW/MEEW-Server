@@ -50,7 +50,8 @@ module.exports = async (req, res) => {
     }
 
     const updatedHistory = await personalityDB.updateTODO(client, userId, completeTaskIds.join());
-    const imageUrl = await personalityDB.getImageByLevelAndId(client, completeTaskIds.length, updatedHistory.personalityId);
+    const personalityImage = await personalityDB.getImageByLevelAndId(client, completeTaskIds.length, updatedHistory.personalityId);
+    const imageUrl = personalityImage.url;
 
     let todo = [];
     for (let i = 0; i < allTaskIds.length; i++) {
