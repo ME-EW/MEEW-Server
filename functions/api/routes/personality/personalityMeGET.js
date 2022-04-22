@@ -6,8 +6,8 @@ const db = require('../../../db/db');
 const { userDB, personalityDB } = require('../../../db');
 
 /**
- *  @오늘의_캐릭터_새로고침
- *  @route GET /personality/new
+ *  @오늘은_나로_살기
+ *  @route GET /personality/me
  */
 
 module.exports = async (req, res) => {
@@ -23,11 +23,7 @@ module.exports = async (req, res) => {
     const user = await userDB.getUserByUserId(client, 1);
     const userId = user.id;
 
-    if (user.chance < 1) {
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.BAD_REQUEST, responseMessage.LACK_OF_CHANCE));
-    }
-
-    const newPersonalityId = Math.floor(Math.random() * 8) + 1;
+    const newPersonalityId = user.personality;
     let tasks = await personalityDB.getTasksByPersonalityId(client, newPersonalityId);
     let newTasks = [];
 
@@ -41,7 +37,6 @@ module.exports = async (req, res) => {
       tasks = tasks.filter((t) => t !== newTask);
     }
 
-    const updatedUser = await userDB.updateChanceByUserId(client, userId, user.chance - 1);
     const recentHistory = await personalityDB.updateRecentHistory(client, userId, newPersonalityId, newTasks.map((t) => t.id).join());
     const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
 
@@ -55,14 +50,14 @@ module.exports = async (req, res) => {
     });
 
     const data = {
-      nickname: updatedUser.nickname,
+      nickname: user.nickname,
       name: character.name,
       level: 0,
-      chance: updatedUser.chance,
+      chance: user.chance,
       todo,
     };
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.GET_TODAY_SUCCESS, data));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.LIVE_ME_SUCCESS, data));
   } catch (error) {
     functions.logger.error(`[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`, `[CONTENT] ${error}`);
     console.log(error);
