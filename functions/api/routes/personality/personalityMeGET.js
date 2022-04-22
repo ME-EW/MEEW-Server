@@ -39,6 +39,8 @@ module.exports = async (req, res) => {
 
     const recentHistory = await personalityDB.updateRecentHistory(client, userId, newPersonalityId, newTasks.map((t) => t.id).join());
     const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
+    const personalityImage = await personalityDB.getImageByLevelAndId(client, 0, recentHistory.personalityId);
+    const imageUrl = personalityImage.url;
 
     let todo = [];
     newTasks.forEach((t) => {
@@ -53,6 +55,7 @@ module.exports = async (req, res) => {
       nickname: user.nickname,
       name: character.name,
       level: 0,
+      imageUrl,
       chance: user.chance,
       todo,
     };

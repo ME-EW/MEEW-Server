@@ -49,7 +49,9 @@ module.exports = async (req, res) => {
       completeTaskIds = completeTaskIds.filter((t) => t !== taskId);
     }
 
-    await personalityDB.updateTODO(client, userId, completeTaskIds.join());
+    const updatedHistory = await personalityDB.updateTODO(client, userId, completeTaskIds.join());
+    const personalityImage = await personalityDB.getImageByLevelAndId(client, completeTaskIds.length, updatedHistory.personalityId);
+    const imageUrl = personalityImage.url;
 
     let todo = [];
     for (let i = 0; i < allTaskIds.length; i++) {
@@ -68,6 +70,7 @@ module.exports = async (req, res) => {
       nickname: user.nickname,
       name: character.name,
       level: completeTaskIds.length,
+      imageUrl,
       chance: user.chance,
       todo,
     };

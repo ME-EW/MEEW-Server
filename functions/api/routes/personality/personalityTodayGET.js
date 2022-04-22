@@ -46,10 +46,14 @@ module.exports = async (req, res) => {
       });
     }
 
+    const personalityImage = await personalityDB.getImageByLevelAndId(client, completeTaskIds.length, recentHistory.personalityId);
+    const imageUrl = personalityImage.url;
+
     const data = {
       nickname: user.nickname,
       name: character.name,
       level: completeTaskIds.length,
+      imageUrl,
       chance: user.chance,
       todo,
     };
