@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
     const userId = user.id;
 
     if (user.chance < 1) {
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.BAD_REQUEST, responseMessage.LACK_OF_CHANCE));
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.LACK_OF_CHANCE));
     }
 
     const newPersonalityId = Math.floor(Math.random() * 8) + 1;
