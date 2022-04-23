@@ -110,10 +110,10 @@ const createNewHistoryByUserId = async (client, userId, newPersonalityId, strNew
 
   const { rows } = await client.query(
     `
-    INSERT INTO public history 
-    (user_id, personality_id, all_task, created_at, updated_at)
+    INSERT INTO public.history 
+    (user_id, personality_id, all_task, complete_task, created_at, updated_at)
     VALUES
-    ($1, $2, $3, $4)
+    ($1, $2, $3, '', $4, $4)
     RETURNING *
     `,
     [userId, newPersonalityId, strNewTasks, dateFormat],
