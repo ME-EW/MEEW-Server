@@ -88,16 +88,18 @@ const getImageByLevelAndId = async (client, level, personalityId) => {
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
 
-const finishHistoryByHistoryId = async (client, personalityId) => {
+const finishHistoryByHistoryId = async (client, historyId) => {
   const now = dayjs().add(9, 'hour');
+  const dateFormat = now.format('YYYY-MM-DD');
+
   const { rows } = await client.query(
     `
       UPDATE public.history
-      SET finished = true, finished_at = $2
-      WHERE personality_id = $1
+      SET finished = true, finished_at = $2, updated_at = $3
+      WHERE id = $1
       RETURNING *
     `,
-    [personalityId, now],
+    [historyId, now, dateFormat],
   );
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
