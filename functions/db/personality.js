@@ -2,14 +2,16 @@ const dayjs = require('dayjs');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
 const getRecentHistoryById = async (client, userId) => {
+  const now = dayjs().add(9, 'hour');
+  const dateFormat = now.format('YYYY-MM-DD');
   const { rows } = await client.query(
     `
       SELECT * FROM public.history
-      WHERE id = $1
+      WHERE id = $1 AND created_at = $2 
       ORDER BY created_at DESC
       LIMIT 1
     `,
-    [userId],
+    [userId, dateFormat],
   );
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
@@ -86,6 +88,22 @@ const getImageByLevelAndId = async (client, level, personalityId) => {
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
 
+const finishHistoryByHistoryId = async (client, historyId) => {
+  const now = dayjs().add(9, 'hour');
+  const dateFormat = now.format('YYYY-MM-DD');
+
+  const { rows } = await client.query(
+    `
+      UPDATE public.history
+      SET finished = true, finished_at = $2, updated_at = $3
+      WHERE id = $1
+      RETURNING *
+    `,
+    [historyId, now, dateFormat],
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+};
+
 module.exports = {
   getRecentHistoryById,
   getTaskByTaskId,
@@ -94,4 +112,5 @@ module.exports = {
   updateRecentHistory,
   updateTODO,
   getImageByLevelAndId,
+  finishHistoryByHistoryId,
 };

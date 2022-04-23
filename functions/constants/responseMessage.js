@@ -25,4 +25,7 @@ module.exports = {
   // TODO 갱신
   INVALID_TASKID: '유효하지 않은 taskId 입니다.',
   TODO_UPDATE_SUCCESS: 'TODO status 업데이트 완료',
+
+  // Scheduling 관련
+  FINISH_TODAY_SUCCESS: '오늘의 캐릭터 끝내기 완료',
 };
