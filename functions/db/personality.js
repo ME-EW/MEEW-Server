@@ -2,14 +2,16 @@ const dayjs = require('dayjs');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
 const getRecentHistoryById = async (client, userId) => {
+  const now = dayjs().add(9, 'hour');
+  const dateFormat = now.format('YYYY-MM-DD');
   const { rows } = await client.query(
     `
       SELECT * FROM public.history
-      WHERE id = $1
+      WHERE id = $1 AND created_at = $2 
       ORDER BY created_at DESC
       LIMIT 1
     `,
-    [userId],
+    [userId, dateFormat],
   );
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
