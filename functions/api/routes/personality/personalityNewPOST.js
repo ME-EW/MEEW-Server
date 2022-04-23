@@ -44,9 +44,11 @@ module.exports = async (req, res) => {
       tasks = tasks.filter((t) => t !== newTask);
     }
 
-    await personalityDB.createNewHistoryByUserId(client, userId, newPersonalityId, newTasks.join());
+    const newTasksIds = newTasks.map((t) => t.id);
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.FINISH_TODAY_SUCCESS));
+    await personalityDB.createNewHistoryByUserId(client, userId, newPersonalityId, newTasksIds.join());
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.CREATE_NEW_SUCCESS));
   } catch (error) {
     functions.logger.error(`[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`, `[CONTENT] ${error}`);
     console.log(error);

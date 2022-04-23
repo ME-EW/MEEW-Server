@@ -22,6 +22,7 @@ module.exports = {
   GET_NEW_SUCCESS: '오늘의 캐릭터 새로고침 완료',
   LIVE_ME_SUCCESS: '오늘은 나로 살기 완료',
   ALREADY_EXIST: '오늘의 캐릭터가 이미 존재합니다',
+  CREATE_NEW_SUCCESS: '오늘의 캐릭터 불러오기 완료',
 
   // TODO 갱신
   INVALID_TASKID: '유효하지 않은 taskId 입니다.',
