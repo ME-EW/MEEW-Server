@@ -86,6 +86,20 @@ const getImageByLevelAndId = async (client, level, personalityId) => {
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
 
+const finishHistoryByHistoryId = async (client, personalityId) => {
+  const now = dayjs().add(9, 'hour');
+  const { rows } = await client.query(
+    `
+      UPDATE public.history
+      SET finished = true, finished_at = $2
+      WHERE personality_id = $1
+      RETURNING *
+    `,
+    [personalityId, now],
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+};
+
 module.exports = {
   getRecentHistoryById,
   getTaskByTaskId,
@@ -94,4 +108,5 @@ module.exports = {
   updateRecentHistory,
   updateTODO,
   getImageByLevelAndId,
+  finishHistoryByHistoryId,
 };
