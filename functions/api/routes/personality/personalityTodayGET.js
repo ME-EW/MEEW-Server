@@ -8,6 +8,8 @@ const { userDB, personalityDB } = require('../../../db');
 /**
  *  @오늘의_캐릭터_확인
  *  @route GET /personality/today
+ *  @error
+ *    1. 오늘의 캐릭터를 아직 배정받지 못함 (신규 유저)
  */
 
 module.exports = async (req, res) => {
@@ -24,6 +26,12 @@ module.exports = async (req, res) => {
     const userId = user.id;
 
     const recentHistory = await personalityDB.getRecentHistoryById(client, userId);
+
+    // @error 1. 오늘의 캐릭터를 아직 배정받지 못함 (신규 유저)
+    if (!recentHistory) {
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.HISTORY_NOT_EXIST));
+    }
+
     const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
 
     const allTaskIds = recentHistory.allTask.split(',');
