@@ -55,6 +55,7 @@ module.exports = async (req, res) => {
       level: completeTaskIds.length,
       imageUrl,
       chance: user.chance,
+      finished: recentHistory.finished,
       todo,
     };
 
