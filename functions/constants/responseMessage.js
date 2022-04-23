@@ -21,6 +21,7 @@ module.exports = {
   LACK_OF_CHANCE: '새로고침 잔여 기회가 없습니다',
   GET_NEW_SUCCESS: '오늘의 캐릭터 새로고침 완료',
   LIVE_ME_SUCCESS: '오늘은 나로 살기 완료',
+  HISTORY_NOT_EXIST: '오늘의 캐릭터가 아직 존재하지 않습니다',
   ALREADY_EXIST: '오늘의 캐릭터가 이미 존재합니다',
   CREATE_NEW_SUCCESS: '오늘의 캐릭터 불러오기 완료',
 
