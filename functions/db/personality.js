@@ -7,7 +7,7 @@ const getRecentHistoryById = async (client, userId) => {
   const { rows } = await client.query(
     `
       SELECT * FROM public.history
-      WHERE id = $1 AND created_at = $2 
+      WHERE user_id = $1 AND created_at = $2 
       ORDER BY created_at DESC
       LIMIT 1
     `,
