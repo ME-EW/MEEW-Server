@@ -7,7 +7,7 @@ const getRecentHistoryById = async (client, userId) => {
   const { rows } = await client.query(
     `
       SELECT * FROM public.history
-      WHERE id = $1 AND created_at = $2 
+      WHERE user_id = $1 AND created_at = $2 
       ORDER BY created_at DESC
       LIMIT 1
     `,
@@ -104,6 +104,23 @@ const finishHistoryByHistoryId = async (client, historyId) => {
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
 
+const createNewHistoryByUserId = async (client, userId, newPersonalityId, strNewTasks) => {
+  const now = dayjs().add(9, 'hour');
+  const dateFormat = now.format('YYYY-MM-DD');
+
+  const { rows } = await client.query(
+    `
+    INSERT INTO public.history 
+    (user_id, personality_id, all_task, complete_task, created_at, updated_at)
+    VALUES
+    ($1, $2, $3, '', $4, $4)
+    RETURNING *
+    `,
+    [userId, newPersonalityId, strNewTasks, dateFormat],
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+};
+
 module.exports = {
   getRecentHistoryById,
   getTaskByTaskId,
@@ -113,4 +130,5 @@ module.exports = {
   updateTODO,
   getImageByLevelAndId,
   finishHistoryByHistoryId,
+  createNewHistoryByUserId,
 };
