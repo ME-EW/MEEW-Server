@@ -24,42 +24,9 @@ module.exports = async (req, res) => {
     const userId = user.id;
 
     const recentHistory = await personalityDB.getRecentHistoryById(client, userId);
-    const character = await personalityDB.getCharacterByPersonalityId(client, recentHistory.personalityId);
+    await personalityDB.finishHistoryByHistoryId(client, recentHistory.id);
 
-    const allTaskIds = recentHistory.allTask.split(',');
-
-    let completeTaskIds = [];
-    if (recentHistory.completeTask) {
-      completeTaskIds = recentHistory.completeTask.split(',');
-    }
-
-    let todo = [];
-    for (let i = 0; i < allTaskIds.length; i++) {
-      const taskId = allTaskIds[i];
-      const complete = completeTaskIds.filter((e) => e === taskId).length === 1 ? true : false;
-      const task = await personalityDB.getTaskByTaskId(client, taskId);
-
-      todo.push({
-        taskId,
-        content: task.content.trim(),
-        complete,
-      });
-    }
-
-    const personalityImage = await personalityDB.getImageByLevelAndId(client, completeTaskIds.length, recentHistory.personalityId);
-    const imageUrl = personalityImage.url;
-
-    const data = {
-      nickname: user.nickname,
-      name: character.name,
-      level: completeTaskIds.length,
-      imageUrl,
-      chance: user.chance,
-      finished: recentHistory.finished,
-      todo,
-    };
-
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.GET_TODAY_SUCCESS, data));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.FINISH_TODAY_SUCCESS));
   } catch (error) {
     functions.logger.error(`[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`, `[CONTENT] ${error}`);
     console.log(error);
