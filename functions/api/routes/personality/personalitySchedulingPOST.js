@@ -56,6 +56,9 @@ module.exports = async (req, res) => {
       const newTasksIds = newTasks.map((t) => t.id);
 
       await personalityDB.createNewHistoryByUserId(client, userId, newPersonalityId, newTasksIds.join());
+
+      // Chance 3으로 초기화
+      await userDB.refillChanceById(client, userId);
     }
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.SCHEDULING_SUCCESS));
