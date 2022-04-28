@@ -20,6 +20,12 @@ module.exports = async (req, res) => {
   try {
     client = await db.connect(req);
 
+    try {
+      await personalityDB.insertSchedule(client);
+    } catch {
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, '이미 처리된 스케줄링 작업'));
+    }
+
     const allUser = await userDB.getAllUser(client);
     const allUserIds = allUser.map((u) => u.id);
 
