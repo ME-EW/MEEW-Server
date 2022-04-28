@@ -1,6 +1,15 @@
 const dayjs = require('dayjs');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
+const getAllUser = async (client) => {
+  const { rows } = await client.query(
+    `
+      SELECT * FROM public.user
+    `,
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
 const getUserByUserId = async (client, userId) => {
   const { rows } = await client.query(
     `
@@ -27,6 +36,7 @@ const updateChanceByUserId = async (client, userId, newChanceCount) => {
 };
 
 module.exports = {
+  getAllUser,
   getUserByUserId,
   updateChanceByUserId,
 };
