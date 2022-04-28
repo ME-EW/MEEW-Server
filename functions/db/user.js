@@ -35,8 +35,23 @@ const updateChanceByUserId = async (client, userId, newChanceCount) => {
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
 
+const refillChanceById = async (client, userId) => {
+  const now = dayjs().add(9, 'hour');
+  const { rows } = await client.query(
+    `
+      UPDATE public.user
+      SET chance = 3, updated_at = $2
+      WHERE id = $1
+      RETURNING *
+    `,
+    [userId, now],
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+};
+
 module.exports = {
   getAllUser,
   getUserByUserId,
   updateChanceByUserId,
+  refillChanceById,
 };
