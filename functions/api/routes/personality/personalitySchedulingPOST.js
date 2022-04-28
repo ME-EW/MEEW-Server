@@ -25,11 +25,15 @@ module.exports = async (req, res) => {
 
     for (let i = 0; i < allUserIds.length; i++) {
       const userId = allUserIds[i];
+      const user = await userDB.getUserByUserId(client, userId);
       const recentHistory = await personalityDB.getRecentHistoryById(client, userId);
       if (recentHistory && !recentHistory.finished) {
         await personalityDB.finishHistoryByHistoryId(client, recentHistory.id);
       }
-      const newPersonalityId = Math.floor(Math.random() * 8) + 1;
+      let newPersonalityId = Math.floor(Math.random() * 8) + 1;
+      while (newPersonalityId === user.personality) {
+        newPersonalityId = Math.floor(Math.random() * 8) + 1;
+      }
       let tasks = await personalityDB.getTasksByPersonalityId(client, newPersonalityId);
       let newTasks = [];
 
