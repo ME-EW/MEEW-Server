@@ -52,9 +52,10 @@ module.exports = async (req, res) => {
       const character = await personalityDB.getCharacterByPersonalityId(client, history.personalityId);
       const personalityImage = await personalityDB.getImageByLevelAndId(client, level, history.personalityId);
       const imgUrl = personalityImage.url;
+      const createdAt = history.createdAt;
 
       const historyObj = {
-        date: String(history.createdAt).replace(/-/gi, '.'),
+        date: `${createdAt.getFullYear()}.${createdAt.getMonth() + 1}.${createdAt.getDate()}`,
         name: character.name.trim(),
         percent: level * 25,
         imgUrl,
