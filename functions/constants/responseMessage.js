@@ -32,4 +32,7 @@ module.exports = {
   // Scheduling 관련
   FINISH_TODAY_SUCCESS: '오늘의 캐릭터 끝내기 완료',
   SCHEDULING_SUCCESS: '캐릭터 종료 및 새로 생성 완료',
+
+  // 기록 조회
+  GET_RECENT_SUCCESS: '최근기록 조회 완료',
 };
