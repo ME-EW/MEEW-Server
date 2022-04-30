@@ -44,7 +44,11 @@ module.exports = async (req, res) => {
     // 오늘 기록은 제외하고 push
     for (let i = 1; i < pastHistory.length; i++) {
       const history = pastHistory[i];
-      const level = history.completeTask.split(',').length;
+      let completeTaskIds = [];
+      if (history.completeTask) {
+        completeTaskIds = history.completeTask.split(',');
+      }
+      const level = completeTaskIds.length;
       const character = await personalityDB.getCharacterByPersonalityId(client, history.personalityId);
       const personalityImage = await personalityDB.getImageByLevelAndId(client, level, history.personalityId);
       const imgUrl = personalityImage.url;
