@@ -35,4 +35,5 @@ module.exports = {
 
   // 기록 조회
   GET_RECENT_SUCCESS: '최근기록 조회 완료',
+  GET_ALL_SUCCESS: '모든기록 조회 완료',
 };
