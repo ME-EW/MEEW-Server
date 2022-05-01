@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
 
     let all = [];
 
-    const pastHistory = await personalityDB.getPastHistoryById(client, userId);
+    const pastHistory = await personalityDB.getAllHistoryById(client, userId);
     if (!pastHistory) {
       return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.GET_ALL_SUCCESS, { all: [] }));
     }
