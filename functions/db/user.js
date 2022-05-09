@@ -1,6 +1,23 @@
 const dayjs = require('dayjs');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
+const createNewUser = async (client, socialType, socialId, nickname, personalityId) => {
+  const now = dayjs().add(9, 'hour');
+  const dateFormat = now.format('YYYY-MM-DD');
+
+  const { rows } = await client.query(
+    `
+    INSERT INTO public.user
+    (social_type, social_id, nickname, personality, created_at, updated_at)
+    VALUES
+    ($1, $2, $3, $4, $5, $5)
+    RETURNING *
+    `,
+    [socialType, socialId, nickname, personalityId, dateFormat],
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+}
+
 const getAllUser = async (client) => {
   const { rows } = await client.query(
     `
@@ -50,6 +67,8 @@ const refillChanceById = async (client, userId) => {
 };
 
 module.exports = {
+  checkAvailableName,
+  createNewUser,
   getAllUser,
   getUserByUserId,
   updateChanceByUserId,
