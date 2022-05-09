@@ -28,4 +28,5 @@ module.exports = {
   // 유저
   SIGN_UP_SUCCESS: '회원가입 완료',
   ALREADY_EXIST_NICKNAME: '존재하는 닉네임입니다.',
+  VALID_NICKNAME: '사용 가능한 닉네임입니다.',
 };
