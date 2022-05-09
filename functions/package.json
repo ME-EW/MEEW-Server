@@ -24,7 +24,11 @@
     "firebase-functions": "^3.14.1",
     "helmet": "^4.6.0",
     "hpp": "^0.2.3",
-    "pg": "^8.7.3"
+    "jsonwebtoken": "^8.5.1",
+    "node-rsa": "^1.1.1",
+    "pg": "^8.7.3",
+    "rand-token": "^1.0.1",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "eslint": "^7.6.0",
