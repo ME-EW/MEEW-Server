@@ -1,6 +1,17 @@
 const dayjs = require('dayjs');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
+const getUserBySocialTypeAndSocialId = async (client, socialType, socialId) => {
+  const { rows } = await client.query(
+    `
+    SELECT id FROM public.user
+    WHERE social_type = $1 AND social_id = $2
+    `,
+    [socialType, socialId]
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+}
+
 const checkAvailableName = async (client, nickname) => {
   const { rows } = await client.query(
     `
@@ -78,6 +89,7 @@ const refillChanceById = async (client, userId) => {
 };
 
 module.exports = {
+  getUserBySocialTypeAndSocialId,
   checkAvailableName,
   createNewUser,
   getAllUser,
