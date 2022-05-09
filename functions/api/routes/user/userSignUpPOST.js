@@ -37,6 +37,10 @@ module.exports = async (req, res) => {
         const { id: socialId } = JSON.parse(response.body);
         let user;
         try {
+          const alreadyUser = await userDB.getUserBySocialTypeAndSocialId(socialType, socialId);
+          if (alreadyUser) {
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.ALREADY_EXIST_USER));
+          }
           user = await userDB.createNewUser(client, socialType, socialId, nickname, personalityId);
         } catch (error) {
           functions.logger.error(`[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`, `[CONTENT] ${error}`);
@@ -75,6 +79,10 @@ module.exports = async (req, res) => {
 
         let user;
         try {
+          const alreadyUser = await userDB.getUserBySocialTypeAndSocialId(socialType, socialId);
+          if (alreadyUser) {
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.ALREADY_EXIST_USER));
+          }
           user = await userDB.createNewUser(client, socialType, socialId, nickname, personalityId);
         } catch (error) {
           functions.logger.error(`[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`, `[CONTENT] ${error}`);
