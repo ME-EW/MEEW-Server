@@ -19,4 +19,13 @@ module.exports = {
   // 기록 조회
   GET_RECENT_SUCCESS: '최근기록 조회 완료',
   GET_ALL_SUCCESS: '모든기록 조회 완료',
+
+  // JWT 에러 메시지
+  NOT_FOUND_AUTHORIZATION_HEADER: 'Authorization 헤더가 존재하지 않습니다.',
+  INVALID_JWT: '유효하지 않은 JWT 토큰입니다.',
+  EXPIRED_JWT: '만료된 JWT 토큰입니다.',
+
+  // 유저
+  SIGN_UP_SUCCESS: '회원가입 완료',
+  ALREADY_EXIST_NICKNAME: '존재하는 닉네임입니다.',
 };
