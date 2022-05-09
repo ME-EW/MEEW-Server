@@ -1,6 +1,17 @@
 const dayjs = require('dayjs');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
+const checkAvailableName = async (client, nickname) => {
+  const { rows } = await client.query(
+    `
+    SELECT id FROM public.user
+    WHERE nickname = $1
+    `,
+    [nickname]
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+}
+
 const createNewUser = async (client, socialType, socialId, nickname, personalityId) => {
   const now = dayjs().add(9, 'hour');
   const dateFormat = now.format('YYYY-MM-DD');
