@@ -28,6 +28,7 @@ module.exports = {
   // 유저
   SIGN_UP_SUCCESS: '회원가입 완료',
   LOGIN_SUCCESS: '로그인 완료',
+  ALREADY_EXIST_USER: '이미 회원가입한 유저입니다.',
   NOT_FOUND_USER: '존재하지 않는 유저입니다.',
   ALREADY_EXIST_NICKNAME: '존재하는 닉네임입니다.',
   VALID_NICKNAME: '사용 가능한 닉네임입니다.',
